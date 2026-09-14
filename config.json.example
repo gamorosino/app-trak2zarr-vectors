@@ -1,0 +1,14 @@
+{
+  "trk": "trk.trk",
+  "tck": null,
+  "trx": null,
+  "num_chunks": 5000,
+  "chunk_shape": "50,50,50",
+  "workers": 0,
+  "workers_backend": "process",
+  "compressor": "zstd",
+  "compute_length": false,
+  "compute_endpoints": false,
+  "coarsen": "",
+  "sparsity": ""
+}

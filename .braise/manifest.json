@@ -1,0 +1,128 @@
+{
+  "name": "trak2zarr-vectors",
+  "github": "gamorosino/app-trak2zarr-vectors",
+  "github_branch": "main",
+  "desc": "Convert a tractogram (.trk, .tck, or .trx) into a Zarr Vectors store using zarr-vectors-tools' zvtools CLI.",
+  "config": {
+    "trk": {
+      "type": "input",
+      "file_id": "track",
+      "input_id": "trk"
+    },
+    "tck": {
+      "type": "input",
+      "file_id": "track",
+      "input_id": "tck"
+    },
+    "trx": {
+      "type": "input",
+      "file_id": "track",
+      "input_id": "trx"
+    },
+    "num_chunks": {
+      "id": "num_chunks",
+      "type": "number",
+      "placeholder": 5000,
+      "advanced": true,
+      "desc": "Target chunk count for TRK ingest (zvtools convert --num-chunks). Only used when the input is .trk.",
+      "default": 5000
+    },
+    "chunk_shape": {
+      "id": "chunk_shape",
+      "type": "string",
+      "placeholder": "50,50,50",
+      "advanced": true,
+      "desc": "Spatial chunk shape X,Y,Z for TCK/TRX ingest (zvtools convert --chunk-shape). Only used when the input is .tck or .trx.",
+      "default": "50,50,50"
+    },
+    "workers": {
+      "id": "workers",
+      "type": "number",
+      "placeholder": 0,
+      "advanced": true,
+      "desc": "Number of parallel worker processes (zvtools convert --workers). 0 disables parallelism.",
+      "default": 0
+    },
+    "workers_backend": {
+      "id": "workers_backend",
+      "type": "string",
+      "placeholder": "process",
+      "advanced": true,
+      "desc": "Parallel backend when --workers is set: process or dask.",
+      "default": "process"
+    },
+    "compressor": {
+      "id": "compressor",
+      "type": "string",
+      "placeholder": "zstd",
+      "advanced": false,
+      "desc": "Chunk array compressor (zvtools convert --compressor): none, zstd, or blosc.",
+      "default": "zstd"
+    },
+    "compute_length": {
+      "id": "compute_length",
+      "type": "boolean",
+      "advanced": true,
+      "desc": "Store per-streamline path length (zvtools convert --compute-length).",
+      "default": false
+    },
+    "compute_endpoints": {
+      "id": "compute_endpoints",
+      "type": "boolean",
+      "advanced": true,
+      "desc": "Store per-streamline endpoints (zvtools convert --compute-endpoints).",
+      "default": false
+    },
+    "coarsen": {
+      "id": "coarsen",
+      "type": "string",
+      "placeholder": "",
+      "advanced": true,
+      "desc": "Optional per-level coarsen factors, e.g. 8,8 (requires sparsity too; builds a multiresolution pyramid).",
+      "default": ""
+    },
+    "sparsity": {
+      "id": "sparsity",
+      "type": "string",
+      "placeholder": "",
+      "advanced": true,
+      "desc": "Optional per-level sparsity factors, e.g. 2,4 (requires coarsen too; builds a multiresolution pyramid).",
+      "default": ""
+    }
+  },
+  "inputs": [
+    {
+      "id": "trk",
+      "datatype": "neuro/track/trk",
+      "datatype_tags": [],
+      "optional": true,
+      "multi": false,
+      "advanced": false
+    },
+    {
+      "id": "tck",
+      "datatype": "neuro/track/tck",
+      "datatype_tags": [],
+      "optional": true,
+      "multi": false,
+      "advanced": false
+    },
+    {
+      "id": "trx",
+      "datatype": "neuro/track/trx",
+      "datatype_tags": [],
+      "optional": true,
+      "multi": false,
+      "advanced": false
+    }
+  ],
+  "outputs": [
+    {
+      "id": "vectors",
+      "desc": "Zarr Vectors store containing the streamline geometry converted from the input tractogram.",
+      "datatype": "neuro/track/zarr-vectors",
+      "datatype_tags": [],
+      "archive": true
+    }
+  ]
+}
