@@ -30,7 +30,7 @@ def main():
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    cmd = ["zvtools", "convert", input_path, OUTPUT_STORE, "--format", fmt]
+    cmd = ["zvtools", "convert", input_path, OUTPUT_STORE, "--format", fmt, "--overwrite"]
 
     if fmt == "trk":
         cmd += ["--num-chunks", str(config.get("num_chunks", 5000))]
