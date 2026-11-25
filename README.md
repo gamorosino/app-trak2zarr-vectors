@@ -1,4 +1,16 @@
-# trak2zarr-vectors
+<h1 align="center">trak2zarr-vectors</h1>
+
+<p align="center">
+  Converts a tractogram (.trk, .tck or .trx) into a Zarr Vectors store with zarr-vectors-tools (zvtools convert), optionally storing lengths, endpoints and a multiresolution pyramid.
+</p>
+
+<p align="center">
+  <a href="https://github.com/brainlife/abcd-spec"><img src="https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg" alt="ABCD Spec v1.1"></a>
+  <a href="https://doi.org/10.25663/brainlife.app.969"><img src="https://img.shields.io/badge/Brainlife-brainlife.app.969-blue.svg" alt="Run on brainlife.io"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-see_LICENSE-lightgrey.svg" alt="License"></a>
+</p>
+
+## At a glance
 
 <!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
 
@@ -8,13 +20,13 @@ Format conversion utility: picks the first provided input and calls zvtools conv
 
 | | |
 |---|---|
-| 📥 **Inputs** | `neuro/track/trk` (optional) · `neuro/track/tck` (optional) · `neuro/track/trx` (optional) |
-| 📤 **Outputs** | `neuro/track/zarr-vectors` |
-| 🐳 **Container** | `gamorosino/zarr-vectors-tools:latest` |
-| ⚙️ **Resources** | 4 GB memory · 1 h walltime |
-| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.969](https://doi.org/10.25663/brainlife.app.969) |
+| **Inputs** | `neuro/track/trk` (optional) · `neuro/track/tck` (optional) · `neuro/track/trx` (optional) |
+| **Outputs** | `neuro/track/zarr-vectors` |
+| **Container** | `gamorosino/zarr-vectors-tools:latest` |
+| **Resources** | 4 GB memory · 1 h walltime |
+| **Run it** | [doi.org/10.25663/brainlife.app.969](https://doi.org/10.25663/brainlife.app.969) |
 
-#### 📥 Inputs
+#### Inputs
 
 | Input | Datatype | Required | Description |
 |---|---|---|---|
@@ -22,14 +34,14 @@ Format conversion utility: picks the first provided input and calls zvtools conv
 | `tck` | `neuro/track/tck` | no | Tractogram in .tck format (provide only one input). |
 | `trx` | `neuro/track/trx` | no | Tractogram in .trx format (provide only one input). |
 
-#### 📤 Outputs
+#### Outputs
 
 | Output | Datatype | Description |
 |---|---|---|
 | `vectors` | `neuro/track/zarr-vectors` | Zarr Vectors store containing the streamline geometry converted from the input tractogram. |
 
 <details>
-<summary><b>⚙️ Parameters</b> (9)</summary>
+<summary><b>Parameters</b> (9)</summary>
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
@@ -47,34 +59,41 @@ Format conversion utility: picks the first provided input and calls zvtools conv
 
 <!-- brainlife-app:end -->
 
-Convert a tractogram (.trk, .tck, or .trx) into a Zarr Vectors store using zarr-vectors-tools' zvtools CLI.
+## Running the App
 
-## Inputs
+### On brainlife.io
 
-- `trk` (neuro/track/trk) -- optional
-- `tck` (neuro/track/tck) -- optional
-- `trx` (neuro/track/trx) -- optional
+Open the App at [doi.org/10.25663/brainlife.app.969](https://doi.org/10.25663/brainlife.app.969), choose `neuro/track/trk`, `neuro/track/tck`, `neuro/track/trx` from your project, set the parameters and press **Execute**. The results are saved to your project as `neuro/track/zarr-vectors`.
 
-## Outputs
+### Locally
 
-- `vectors` (neuro/track/zarr-vectors) -- Zarr Vectors store containing the streamline geometry converted from the input tractogram.
+You need [Singularity/Apptainer](https://apptainer.org/) (the App runs in `gamorosino/zarr-vectors-tools:latest`), [`jq`](https://jqlang.github.io/jq/).
 
-## Usage
+1. Clone this repository.
+2. Create `config.json` with the paths to your inputs and the parameters:
 
-Brainlife.io: run via `braise-app-run`/`braise-app-pipeline` (once registered
-with `braise-app-create`), or the web UI.
+   ```json
+   {
+       "trk": "/path/to/trk/trk",
+       "tck": "/path/to/tck/tck",
+       "trx": "/path/to/trx/trx",
+       "num_chunks": 5000,
+       "chunk_shape": "50,50,50",
+       "workers": 0,
+       "workers_backend": "process",
+       "compressor": "zstd",
+       "compute_length": false,
+       "compute_endpoints": false,
+       "coarsen": "",
+       "sparsity": ""
+   }
+   ```
 
-Locally (outside brainlife): copy `config.json.example` to `config.json`,
-fill in real file paths, then run `./main` from this directory. `main` pulls
-its own container (`singularity exec docker://...`) -- no local install of
-the underlying tool needed, only Singularity itself.
+3. Run `./main`.
 
-Entrypoint: `trak2zarr_vectors.py`
+## Troubleshooting
 
-Exactly one of `trk`/`tck`/`trx` should be set (the others left `null`);
-`trak2zarr_vectors.py` picks the first non-null one and calls `zvtools
-convert` with the right flags for that format (`--num-chunks` for `.trk`,
-`--chunk-shape` for `.tck`/`.trx`).
+- **no output produced**: Check that one tractogram input is provided and the conversion log for errors.
 
 ## Container
 
@@ -88,10 +107,18 @@ install, since the on-disk format `zarr-vectors-tools` requires (0.9.0) isn't
 published on PyPI yet -- see the [zarr-vectors-tools
 docs](https://zarr-vectors-tools.readthedocs.io/en/latest) for details.
 
+## Citing
+
+If you use this App, please cite it, the software it builds on and brainlife.io:
+
+- trak2zarr-vectors. brainlife.io App. [doi:10.25663/brainlife.app.969](https://doi.org/10.25663/brainlife.app.969)
+- Hayashi S, Caron BA, Heinsfeld AS, et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. *Nature Methods* 21:809–813 (2024). [doi:10.1038/s41592-024-02237-2](https://doi.org/10.1038/s41592-024-02237-2)
+- Avesani P, McPherson B, Hayashi S, et al. The open diffusion data derivatives, brain data upcycling via integrated publishing of derivatives and reproducible open cloud services. *Scientific Data* 6:69 (2019). [doi:10.1038/s41597-019-0073-y](https://doi.org/10.1038/s41597-019-0073-y)
+
 ## Authors
 
-- Gabriele Amorosino <ga24643@eid.utexas.edu>
+- Gabriele Amorosino
 
 ## License
 
-MIT, see `LICENSE`.
+See [LICENSE](LICENSE).
